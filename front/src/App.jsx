@@ -9,15 +9,6 @@ function App () {
   const { openModal, openEditModal } = useContext(ModalContext)
   const [tasks, setTask] = useState([])
 
-  const getFullHour = () => {
-    const fullDate = new Date()
-    const hour = fullDate.getHours()
-    const minutes = fullDate.getMinutes() < 10 ? `0${fullDate.getMinutes()}` : fullDate.getMinutes()
-    const seconds = fullDate.getSeconds() < 10 ? `0${fullDate.getSeconds()}` : fullDate.getSeconds()
-
-    return { fullHour: `${hour}:${minutes}:${seconds}`, date: fullDate }
-  }
-
   const onSaveTask = (even) => {
     even.preventDefault()
 
@@ -30,15 +21,19 @@ function App () {
       return
     }
 
-    const { fullHour: currentDate, date } = getFullHour()
-
-    const newTask = {
-      title: task,
-      date,
-      startTime: currentDate
-    }
-
-    setTask([...tasks, newTask])
+    fetch(API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ task })
+    })
+      .then(res => {
+        if (!res.ok) throw new Error('Unexpected error')
+        return res.json()
+      })
+      .then(({ data }) => setTask([...tasks, data]))
+      .catch(err => console.error(err))
     even.target.reset()
   }
 
@@ -54,8 +49,8 @@ function App () {
 
   return (
     <main className='w-screen min-h-screen flex flex-col '>
-      {openModal && <CompletedTask />}
-      {openEditModal && <EditTask />}
+      {openModal && <CompletedTask setTask={setTask} />}
+      {openEditModal && <EditTask setTask={setTask} />}
       <header className='w-full p-4 mt-10'>
         <img src='https://grupopenna.com.ar/images/logoi.png' alt='Logo del grupo penna' />
       </header>

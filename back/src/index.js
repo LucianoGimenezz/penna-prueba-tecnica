@@ -1,7 +1,7 @@
 import express from 'express'
 import morgan from 'morgan'
 import cors from 'cors'
-import { router } from './routes/taskRoutes.js'
+import { taskRouter, downloadRouter } from './routes/index.js'
 
 export const app = express()
 
@@ -11,4 +11,5 @@ app.use(cors({
 }))
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
-app.use('/task', router)
+app.use('/task', taskRouter)
+app.use('/download', downloadRouter)

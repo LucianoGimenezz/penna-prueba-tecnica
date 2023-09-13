@@ -3,7 +3,7 @@ import { ModalContext } from '../context'
 import { useContext } from 'react'
 import Modal from './Modal'
 
-export default function CompletedTask () {
+export default function CompletedTask ({ setTask }) {
   const { handleOpenModal, currentTaskId } = useContext(ModalContext)
 
   const onFinishedTask = (event) => {
@@ -15,7 +15,9 @@ export default function CompletedTask () {
         if (!res.ok) throw new Error('Unexpected error')
         return res.json()
       })
-      .then(data => console.log({ data }))
+      .then(({ data }) => {
+        setTask(data.tasks)
+      })
       .catch(err => console.error(err))
       .finally(() => {
         handleOpenModal()

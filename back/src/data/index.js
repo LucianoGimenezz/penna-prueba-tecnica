@@ -6,6 +6,7 @@ import path from 'node:path'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
+const filePath = path.join(__dirname, 'db.json')
 
 const calculateTotal = (startDate, finishedDate) => {
   const start = new Date(startDate)
@@ -28,21 +29,20 @@ const calculateTotal = (startDate, finishedDate) => {
 
 export class TaskModel {
   static getAll = async () => {
-    const parseTask = getParseJson(__dirname)
+    const parseTask = getParseJson(__dirname, filePath)
     return parseTask
   }
 
   static getById = async (id) => {
-    const filePath = path.join(__dirname, 'db.json')
-    const data = fs.readFileSync(filePath, 'utf8')
-    const { tasks } = JSON.parse(data)
+    const data = getParseJson(__dirname, filePath)
+    const { tasks } = data
 
     const task = tasks?.find(task => task.id === id)
     return task
   }
 
   static completedTask = async (id) => {
-    const data = getParseJson(__dirname)
+    const data = getParseJson(__dirname, filePath)
     const indexTask = data?.tasks.findIndex(task => task.id === id)
     if (indexTask < 0) return null
 
@@ -66,15 +66,13 @@ export class TaskModel {
 
     data.tasks[indexTask] = currentTask
     const updatedData = JSON.stringify(data)
-    fs.writeFileSync(path.join(__dirname, 'db.json'), updatedData)
-    return currentTask
+    fs.writeFileSync(filePath, updatedData)
+    return data
   }
 
   static addTask = async (task) => {
     try {
-      const filePath = path.join(__dirname, 'db.json')
-      const data = fs.readFileSync(filePath, 'utf8')
-      const parseTask = JSON.parse(data)
+      const parseTask = getParseJson(__dirname, filePath)
       const { fullHour, date } = getFullHour()
 
       const newTask = {
@@ -92,5 +90,17 @@ export class TaskModel {
     } catch (err) {
       throw new Error(err)
     }
+  }
+
+  static updateTask = async (id, task) => {
+    const parseTask = getParseJson(__dirname, filePath)
+    const indexTaskToUpdate = parseTask.tasks.findIndex(task => task.id === id)
+
+    if (indexTaskToUpdate < 0) return null
+
+    parseTask.tasks[indexTaskToUpdate].title = task
+    const updatedData = JSON.stringify(parseTask)
+    fs.writeFileSync(filePath, updatedData)
+    return parseTask
   }
 }

@@ -28,6 +28,15 @@ router.patch('/:id', async (req, res) => {
   res.status(200).json({ error: false, message: null, data: updatedTask })
 })
 
+router.put('/:id', async (req, res) => {
+  const { task } = req.body
+  const { id } = req.params
+  const updatedTask = await TaskModel.updateTask(id, task)
+
+  if (!updatedTask) return res.status(404).json({ error: true, message: `Task with ID: ${id} not found`, data: null })
+  res.status(200).json({ error: false, message: null, data: updatedTask })
+})
+
 router.post('/', async (req, res) => {
   const { task } = req.body
 
