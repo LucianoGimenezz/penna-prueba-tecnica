@@ -1,11 +1,1 @@
-{
-    "currentUser": 43581578,
-    "tasks": [
-        {
-            "id": "9308cd36-1e09-42a6-ad02-c25dfb3f5610",
-            "title": "Imprimir recibo de sueldo",
-            "startTime": "16:37:24",
-            "date": "2023-09-13T19:37:24.794Z"
-        }
-    ]
-}
+{"currentUser":43581578,"tasks":{"history":[{"id":"2b42d4d3-d9bc-4cc8-ad54-d5d00ab58583","title":"Crear reporte de nuevo","startTime":"16:56:21","date":"2023-09-13T19:56:21.356Z","endTime":"16:57:38","total":"00:01:17"},{"id":"6a41dbda-72f7-412c-afaa-cc10db6f3600","title":"Imprimir recibo de sueldos","startTime":"16:56:55","date":"2023-09-13T19:56:55.785Z","endTime":"16:58:32","total":"00:01:37"},{"id":"fc30a823-1597-4f35-a1b9-af0329e2cccd","title":"Imprimir sueldo","startTime":"16:57:03","date":"2023-09-13T19:57:03.128Z","endTime":"16:58:38","total":"00:01:35"},{"id":"9551e60f-1b65-4b5c-9346-46ed82a1a913","title":"Imprimir recibo de sueldo","startTime":"17:47:24","date":"2023-09-13T20:47:24.381Z","endTime":"17:58:25","total":"00:11:01"},{"id":"a7c053be-336f-48cd-97d9-5e3369c7ae87","title":"contratar a un full stack","startTime":"17:59:45","date":"2023-09-13T20:59:45.548Z","endTime":"17:59:56","total":"00:00:11"},{"id":"18691f9b-0053-4003-9329-edb737a95929","title":"Tarea de adminisracion","startTime":"18:27:19","date":"2023-09-13T21:27:19.844Z","endTime":"20:29:30","total":"02:02:11"},{"id":"ed3765a8-6ba1-445d-864d-8aee30764d35","title":"Terminar los TEST de la prueba","startTime":"20:30:07","date":"2023-09-13T23:30:07.656Z","endTime":"20:42:30","total":"00:12:22"}],"all":[{"id":"b9b7afed-8dc9-4b17-9b3e-f491ae35ae0d","title":"Terminar guia de despliegue","startTime":"20:40:40","date":"2023-09-13T23:40:40.052Z"},{"id":"84ecfc30-6971-4476-83a6-ed47b6de2550","title":"Crear reporte sobre IA","startTime":"20:41:31","date":"2023-09-13T23:41:31.235Z"},{"id":"6d3ad71a-b380-4c17-9b69-7446cf0eae58","title":"Mi primer tarea","startTime":"20:44:37","date":"2023-09-13T23:44:37.079Z"}]}}

@@ -1,13 +1,30 @@
+import { API_URL } from '../consts'
 import Modal from './Modal'
 
 export default function RegisterDNI ({ setIsUserRegistered }) {
   const handleSubmit = (event) => {
     event.preventDefault()
     const fomrmData = new FormData(event.target)
-    const dni = fomrmData.get('dni')
+    const dni = Number(fomrmData.get('dni'))
 
     if (dni === 0) return
-    setIsUserRegistered(false)
+
+    fetch(`${API_URL}/user`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ dni })
+    })
+      .then(res => {
+        if (!res.ok) throw new Error('Unexpected error')
+        return res.json()
+      })
+      .then(data => console.log({ data }))
+      .catch(err => console.error(err))
+      .finally(() => {
+        setIsUserRegistered(false)
+      })
   }
 
   return (

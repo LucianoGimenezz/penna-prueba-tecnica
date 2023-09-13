@@ -8,8 +8,9 @@ import RegisterDNI from './components/RegisterDNI'
 
 function App () {
   const { openModal, openEditModal } = useContext(ModalContext)
-  const [tasks, setTask] = useState([])
+  const [tasks, setTask] = useState()
   const [isUserRegisterd, setIsUserRegistered] = useState(false)
+  const [currentPath, setCurrentPath] = useState('')
 
   const checkIfUserIsRegistered = () => {
     const isRegistered = JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY))
@@ -21,10 +22,13 @@ function App () {
     return false
   }
 
+  const handleTap = (pathname) => {
+    window.history.pushState(null, '', pathname)
+    setCurrentPath(pathname)
+  }
+
   const onSaveTask = (even) => {
     even.preventDefault()
-
-    if (!checkIfUserIsRegistered()) return
 
     // Creo un formData para obtener el input por el atributo `name`
     const formData = new FormData(even.target)
@@ -35,7 +39,9 @@ function App () {
       return
     }
 
-    fetch(API_URL, {
+    if (!checkIfUserIsRegistered()) return
+
+    fetch(`${API_URL}/task`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -46,13 +52,21 @@ function App () {
         if (!res.ok) throw new Error('Unexpected error')
         return res.json()
       })
-      .then(({ data }) => setTask([...tasks, data]))
+      .then(({ data }) => {
+        const prevValues = tasks
+        prevValues?.all.push(data)
+        setTask({ ...prevValues })
+      })
       .catch(err => console.error(err))
     even.target.reset()
   }
 
   useEffect(() => {
-    fetch(API_URL)
+    const pathname = window.location.pathname
+
+    if (pathname === '/task' || pathname === '/history') setCurrentPath(pathname.split('/')[1])
+
+    fetch(`${API_URL}/task`)
       .then(res => {
         if (!res.ok) throw new Error('Unexpected error')
         return res.json()
@@ -77,14 +91,46 @@ function App () {
           <button className='mt-4 w-40 bg-blue-600'>Agregar Tarea</button>
         </form>
 
-        <section className='w-full mt-4'>
-          {tasks.length > 0 && <TaskTable tasks={tasks} />}
-        </section>
+        <ul className='flex  w-40 items-center justify-center mt-6'>
+          <div
+            onClick={() => handleTap('task')}
+            className={`w-1/2 border-b flex justify-center transition-colors  p-2 ${currentPath !== 'history' ? 'border-b-white' : 'border-b-transparent'}`}
+          >
+            <li className='text-xl  mr-3 cursor-pointer'>Tareas</li>
+          </div>
+          <div
+            onClick={() => handleTap('history')}
+            className={`w-1/2 flex border-b  transition-colors justify-center p-2 ${currentPath === 'history' ? 'border-b-white' : 'border-b-transparent'}`}
+          >
+            <li className='text-xl cursor-pointer'>Historial</li>
+          </div>
+
+        </ul>
+        {currentPath !== 'history' && tasks?.all?.length > 0 && (
+          <>
+            <section className='w-full mt-4'>
+              <TaskTable tasks={tasks?.all} />
+            </section>
+
+            <footer className='w-full mt-12'>
+              <a download href='http://localhost:3001/download?target=pending' className='bg-green-600 text-white px-4 py-4 rounded-lg cursor-pointer'>Descargar CSV</a>
+            </footer>
+          </>
+        )}
+
+        {currentPath === 'history' && tasks?.history?.length > 0 && (
+          <>
+            <section className='w-full mt-4'>
+              <TaskTable tasks={tasks?.history} />
+            </section>
+
+            <footer className='w-full mt-12'>
+              <a download href='http://localhost:3001/download?target=history' className='bg-green-600 text-white px-4 py-4 rounded-lg cursor-pointer'>Descargar CSV</a>
+            </footer>
+          </>
+        )}
       </section>
 
-      <footer className='w-full mt-4 p-4'>
-        {tasks.length > 0 && <a download href='http://localhost:3001/download' className='bg-green-600 text-white px-4 py-4 rounded-lg cursor-pointer'>Descargar CSV</a>}
-      </footer>
     </main>
   )
 }

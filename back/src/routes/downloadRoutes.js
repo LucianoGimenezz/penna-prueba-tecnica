@@ -5,10 +5,12 @@ import { TaskModel } from '../data/index.js'
 export const router = Router()
 
 router.get('/', async (req, res) => {
+  const { target } = req.query
   const { tasks } = await TaskModel.getAll()
+  const nameFile = `reporte_${target}.csv`
 
   const csvWriter = createObjectCsvWriter({
-    path: 'reporte.csv',
+    path: nameFile,
     header: [
       { id: 'title', title: 'Tarea' },
       { id: 'startTime', title: 'Hora de inicio' },
@@ -17,10 +19,11 @@ router.get('/', async (req, res) => {
     ]
   })
 
-  csvWriter.writeRecords(tasks)
+  const data = target === 'history' ? tasks.history : tasks.all
+  csvWriter.writeRecords(data)
     .then(() => {
     // Envíar el archivo CSV como respuesta
-      res.download('reporte.csv', 'reporte.csv', (error) => {
+      res.download(nameFile, nameFile, (error) => {
         if (error) {
           console.error(error)
           res.status(500).json({ error: 'Error al descargar el archivo CSV' })

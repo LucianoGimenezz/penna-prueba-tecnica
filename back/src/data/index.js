@@ -33,20 +33,19 @@ export class TaskModel {
     const data = getParseJson(__dirname, filePath)
     const { tasks } = data
 
-    const task = tasks?.find(task => task.id === id)
+    // Concateno los dos array para poder realizar la busqueda
+    const task = [...tasks.all, ...tasks.history].find(task => task.id === id)
     return task
   }
 
   static completedTask = async (id) => {
     const data = getParseJson(__dirname, filePath)
-    const indexTask = data?.tasks.findIndex(task => task.id === id)
+    const indexTask = data?.tasks.all.findIndex(task => task.id === id)
     if (indexTask < 0) return null
 
     // Si el indexTask es mayor a cero entonces la tarea existe, la guardamos en una variable para poder agregar
     // los atributos `endTiem` y `total`.
-    let currentTask = data.tasks[indexTask]
-
-    if (currentTask?.endTime) return null
+    let currentTask = data.tasks.all[indexTask]
 
     // Traemos la fecha y la hora en la que se finalizo la tarea
     const { fullHour, date } = getFullHour()
@@ -60,7 +59,13 @@ export class TaskModel {
       total: totalTime
     }
 
-    data.tasks[indexTask] = currentTask
+    data.tasks.history.push(currentTask)
+
+    // Eliminamos la tarea que se completo del array de tareas pendientes
+
+    const filteredTasks = data.tasks.all.filter(task => task.id !== id)
+    data.tasks.all = filteredTasks
+
     const updatedData = JSON.stringify(data)
     fs.writeFileSync(filePath, updatedData)
     return data
@@ -78,7 +83,7 @@ export class TaskModel {
         date
       }
 
-      parseTask?.tasks.push(newTask)
+      parseTask?.tasks.all.push(newTask)
 
       const updatedData = JSON.stringify(parseTask)
       fs.writeFileSync(filePath, updatedData)
@@ -88,13 +93,23 @@ export class TaskModel {
     }
   }
 
-  static updateTask = async (id, task) => {
+  static updateTask = async (id, task, isPending) => {
     const parseTask = getParseJson(__dirname, filePath)
-    const indexTaskToUpdate = parseTask.tasks.findIndex(task => task.id === id)
+    let indexTaskToUpdate
 
-    if (indexTaskToUpdate < 0) return null
+    // Verificamos en donde tenemos que  buscar la tarea a modificar
+    if (isPending === 'true') {
+      indexTaskToUpdate = parseTask.tasks.all.findIndex(task => task.id === id)
 
-    parseTask.tasks[indexTaskToUpdate].title = task
+      if (indexTaskToUpdate < 0) return null
+      parseTask.tasks.all[indexTaskToUpdate].title = task
+    } else {
+      indexTaskToUpdate = parseTask.tasks.history.findIndex(task => task.id === id)
+
+      if (indexTaskToUpdate < 0) return null
+      parseTask.tasks.history[indexTaskToUpdate].title = task
+    }
+
     const updatedData = JSON.stringify(parseTask)
     fs.writeFileSync(filePath, updatedData)
     return parseTask

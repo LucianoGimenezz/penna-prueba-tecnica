@@ -25,9 +25,11 @@ export default function TaskTable ({ tasks }) {
             <td>{task?.endTime || '--'}</td>
             <td>{task?.total || '--'}</td>
             <td className='flex justify-center cursor-pointer gap-x-2'>
-              <span onClick={() => handleOpenModal(task.id)}>
-                <CheckIcon />
-              </span>
+              {!task?.endTime && (
+                <span onClick={() => handleOpenModal(task.id)}>
+                  <CheckIcon />
+                </span>
+              )}
               <span onClick={() => handleOpenEditModal(task.id)}>
                 <EditIcon />
               </span>

@@ -8,7 +8,7 @@ export default function CompletedTask ({ setTask }) {
 
   const onFinishedTask = (event) => {
     event.preventDefault()
-    fetch(`${API_URL}/${currentTaskId}`, {
+    fetch(`${API_URL}/task/${currentTaskId}`, {
       method: 'PATCH'
     })
       .then(res => {

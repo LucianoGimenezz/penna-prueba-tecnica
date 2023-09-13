@@ -11,13 +11,15 @@ const ModalProvider = ({ children }) => {
   const closeEditModal = () => setOpenEditModal(false)
 
   const handleOpenEditModal = (taskId) => {
-    fetch(`${API_URL}/${taskId}`)
-      .then(res => {
-        if (!res.ok) throw new Error('Unexpected error')
-        return res.json()
-      })
-      .then(({ data }) => setTaskToEdit(data))
-      .catch(err => { throw new Error(err) })
+    if (!taskToEdit || taskToEdit.id !== taskId) {
+      fetch(`${API_URL}/task/${taskId}`)
+        .then(res => {
+          if (!res.ok) throw new Error('Unexpected error')
+          return res.json()
+        })
+        .then(({ data }) => setTaskToEdit(data))
+        .catch(err => { throw new Error(err) })
+    }
 
     setOpenEditModal(true)
   }

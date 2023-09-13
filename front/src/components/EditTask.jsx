@@ -13,7 +13,9 @@ export default function EditTask ({ setTask }) {
 
     if (!cleanInput) return
 
-    fetch(`${API_URL}/${taskToEdit?.id}`, {
+    const isPending = !taskToEdit?.endTime
+
+    fetch(`${API_URL}/task/${taskToEdit?.id}?pending=${isPending}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
