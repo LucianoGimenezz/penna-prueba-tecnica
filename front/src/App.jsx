@@ -2,15 +2,29 @@ import { useState, useContext, useEffect } from 'react'
 import { ModalContext } from './context'
 import TaskTable from './components/TaskTable'
 import EditTask from './components/EditTask'
-import { API_URL } from './consts'
+import { API_URL, LOCALSTORAGE_KEY } from './consts'
 import CompletedTask from './components/CompletedTask'
+import RegisterDNI from './components/RegisterDNI'
 
 function App () {
   const { openModal, openEditModal } = useContext(ModalContext)
   const [tasks, setTask] = useState([])
+  const [isUserRegisterd, setIsUserRegistered] = useState(false)
+
+  const checkIfUserIsRegistered = () => {
+    const isRegistered = JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY))
+
+    if (isRegistered) return true
+
+    localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(true))
+    setIsUserRegistered(true)
+    return false
+  }
 
   const onSaveTask = (even) => {
     even.preventDefault()
+
+    if (!checkIfUserIsRegistered()) return
 
     // Creo un formData para obtener el input por el atributo `name`
     const formData = new FormData(even.target)
@@ -49,6 +63,7 @@ function App () {
 
   return (
     <main className='w-screen min-h-screen flex flex-col '>
+      {isUserRegisterd && <RegisterDNI setIsUserRegistered={setIsUserRegistered} />}
       {openModal && <CompletedTask setTask={setTask} />}
       {openEditModal && <EditTask setTask={setTask} />}
       <header className='w-full p-4 mt-10'>
@@ -68,7 +83,7 @@ function App () {
       </section>
 
       <footer className='w-full mt-4 p-4'>
-        {tasks.length > 0 && <button className='bg-green-600'>Descargar CSV</button>}
+        {tasks.length > 0 && <a download href='http://localhost:3001/download' className='bg-green-600 text-white px-4 py-4 rounded-lg cursor-pointer'>Descargar CSV</a>}
       </footer>
     </main>
   )

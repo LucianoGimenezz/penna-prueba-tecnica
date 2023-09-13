@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto'
-import { getFullHour, getParseJson } from '../utils/index.js'
+import { getFullHour, getParseJson, calculateTotal } from '../utils/index.js'
 import { fileURLToPath } from 'node:url'
 import fs from 'node:fs'
 import path from 'node:path'
@@ -8,23 +8,19 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const filePath = path.join(__dirname, 'db.json')
 
-const calculateTotal = (startDate, finishedDate) => {
-  const start = new Date(startDate)
-  const finished = new Date(finishedDate)
+export class UserModel {
+  static saveDni = async (dni) => {
+    const parseJson = getParseJson(__dirname, filePath)
+    parseJson.currentUser = dni
 
-  // Calculo la diferencia en milisegundos
-
-  const differences = start - finished
-
-  const seconds = Math.abs(Math.floor(differences / 1000) % 60) - 1
-  const minutes = Math.abs(Math.floor(differences / 60000) % 60) - 1
-  const hour = Math.abs(Math.floor(differences / 3600000)) - 1
-
-  const parseMinutes = minutes < 10 ? `0${minutes}` : minutes
-  const parseSeconds = seconds < 10 ? `0${seconds}` : seconds
-  const parseHour = hour < 10 ? `0${hour}` : hour
-
-  return `${parseHour}:${parseMinutes}:${parseSeconds}`
+    try {
+      const updatedData = JSON.stringify(parseJson)
+      fs.writeFileSync(filePath, updatedData)
+      return parseJson
+    } catch (err) {
+      throw new Error(err)
+    }
+  }
 }
 
 export class TaskModel {
