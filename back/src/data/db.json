@@ -1,1 +1,7 @@
-{"currentUser":43581578,"tasks":{"history":[{"id":"18691f9b-0053-4003-9329-edb737a95929","title":"Tarea de adminisracion","startTime":"18:27:19","date":"2023-09-13T21:27:19.844Z","endTime":"20:29:30","total":"02:02:11"},{"id":"ed3765a8-6ba1-445d-864d-8aee30764d35","title":"Terminar los TEST de la prueba","startTime":"20:30:07","date":"2023-09-13T23:30:07.656Z","endTime":"20:42:30","total":"00:12:22"}],"all":[{"id":"b9b7afed-8dc9-4b17-9b3e-f491ae35ae0d","title":"Tarea nueva de nuevo","startTime":"20:40:40","date":"2023-09-13T23:40:40.052Z"},{"id":"84ecfc30-6971-4476-83a6-ed47b6de2550","title":"Crear reporte sobre IA","startTime":"20:41:31","date":"2023-09-13T23:41:31.235Z"},{"id":"6d3ad71a-b380-4c17-9b69-7446cf0eae58","title":"Mi primer tarea","startTime":"20:44:37","date":"2023-09-13T23:44:37.079Z"},{"id":"e8f3835e-d5d6-4ce7-aa20-3c3ca95ccd7a","title":"Mock title","startTime":"12:11:51","date":"2023-09-14T15:11:51.729Z"}]}}
+{
+    "currentUser": 43581578,
+    "tasks": {
+        "history": [],
+        "all": []
+    }
+}
