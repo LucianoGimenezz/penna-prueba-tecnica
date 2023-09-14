@@ -24,12 +24,16 @@ export class UserModel {
 }
 
 export class TaskModel {
-  static getAll = async () => {
+  static getAll = async (isTestMode) => {
+    const file = isTestMode ? 'db-test.json' : 'db.json'
+    const filePath = path.join(__dirname, file)
     const parseTask = getParseJson(__dirname, filePath)
     return parseTask
   }
 
-  static getById = async (id) => {
+  static getById = async (id, isTestMode) => {
+    const file = isTestMode ? 'db-test.json' : 'db.json'
+    const filePath = path.join(__dirname, file)
     const data = getParseJson(__dirname, filePath)
     const { tasks } = data
 
@@ -71,8 +75,10 @@ export class TaskModel {
     return data
   }
 
-  static addTask = async (task) => {
+  static addTask = async (task, isTestMode) => {
     try {
+      const file = isTestMode ? 'db-test.json' : 'db.json'
+      const filePath = path.join(__dirname, file)
       const parseTask = getParseJson(__dirname, filePath)
       const { fullHour, date } = getFullHour()
 
@@ -93,7 +99,9 @@ export class TaskModel {
     }
   }
 
-  static updateTask = async (id, task, isPending) => {
+  static updateTask = async (id, task, isPending, isTestMode) => {
+    const file = isTestMode ? 'db-test.json' : 'db.json'
+    const filePath = path.join(__dirname, file)
     const parseTask = getParseJson(__dirname, filePath)
     let indexTaskToUpdate
 

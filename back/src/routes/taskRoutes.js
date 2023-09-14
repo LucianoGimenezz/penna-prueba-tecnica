@@ -2,8 +2,9 @@ import { Router } from 'express'
 import { TaskModel } from '../data/index.js'
 export const router = Router()
 
-router.get('/', async (_, res) => {
-  const tasks = await TaskModel.getAll()
+router.get('/', async (req, res) => {
+  const { test } = req.query
+  const tasks = await TaskModel.getAll(test)
   res.status(200).json({
     error: false,
     data: tasks
@@ -12,7 +13,8 @@ router.get('/', async (_, res) => {
 
 router.get('/:id', async (req, res) => {
   const { id } = req.params
-  const task = await TaskModel.getById(id)
+  const { test } = req.query
+  const task = await TaskModel.getById(id, test)
 
   if (!task) return res.status(404).json({ error: true, message: `Task with ID: ${id} not found`, data: null })
 
@@ -31,9 +33,9 @@ router.patch('/:id', async (req, res) => {
 router.put('/:id', async (req, res) => {
   const { task } = req.body
   const { id } = req.params
-  const { pending } = req.query
+  const { pending, test } = req.query
 
-  const updatedTask = await TaskModel.updateTask(id, task, pending)
+  const updatedTask = await TaskModel.updateTask(id, task, pending, test)
 
   if (!updatedTask) return res.status(404).json({ error: true, message: `Task with ID: ${id} not found`, data: null })
   res.status(200).json({ error: false, message: null, data: updatedTask })
@@ -41,6 +43,7 @@ router.put('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
   const { task } = req.body
+  const { test } = req.query
 
   if (!task) {
     return res.status(400).json({
@@ -51,7 +54,7 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    const newTask = await TaskModel.addTask(task)
+    const newTask = await TaskModel.addTask(task, test)
     res.status(201).json({
       error: false,
       message: null,
